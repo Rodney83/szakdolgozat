@@ -54,6 +54,6 @@ class UserProfile(User):
         return "%s - %s" % (self.username, self.get_full_name())
 
 
-class ManagersProfiles(UserProfile):
+class ManagersProfile(UserProfile):
     approve_group = models.ManyToManyField(ManagementGroups, related_name="managing_members")
 
