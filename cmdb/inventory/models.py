@@ -1,8 +1,9 @@
 from __future__ import unicode_literals
 
 from django.db import models
-from core.models import UserProfile, ManagersProfile, TechnicalGroups, ManagementGroups
-import abstract_models
+
+from core import abstract_models
+from core.models import UserProfile, ManagerProfile, TechnicalGroups, ManagementGroups
 
 
 class CiStatus(abstract_models.ActiveFieldModelAbstract):
@@ -197,5 +198,5 @@ class CiBusinessContract(ConfigurationItem):
     availability = models.CharField(max_length=5, null=True)
     maintenance_window = models.CharField(max_length=30, null=True)
     severity = models.IntegerField(choices=OBJECT_TYPES, default=3, help_text="A rendelkezesre allas prioritasa")
-    primary_mgmt_contact = models.ForeignKey(ManagersProfile, related_name="pri_contact_for")
+    primary_mgmt_contact = models.ForeignKey(ManagerProfile, related_name="pri_contact_for")
     mgmt_group = models.ManyToManyField(ManagementGroups, related_name="managed_bc")

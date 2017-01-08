@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     # Custom apps
     'core.apps.CoreConfig',
     'inventory.apps.InventoryConfig',
+    'change_management.apps.ChangeManagementConfig'
 ]
 
 MIDDLEWARE = [

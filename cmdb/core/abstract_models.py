@@ -1,5 +1,5 @@
 from django.db import models
-from model_magaers import ActiveFieldManager
+from inventory.model_magaers import ActiveFieldManager
 
 
 class ActiveFieldModelAbstract(models.Model):
