@@ -1,3 +1,9 @@
 from django.contrib import admin
+import models
 
-# Register your models here.
+
+admin.site.register(models.TaskStatus)
+admin.site.register(models.ChangeState)
+admin.site.register(models.ClosureCode)
+admin.site.register(models.Change)
+admin.site.register(models.Task)

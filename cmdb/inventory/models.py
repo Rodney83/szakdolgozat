@@ -18,6 +18,12 @@ class CiStatus(abstract_models.ActiveFieldModelAbstract):
         verbose_name = "Statusz"
         verbose_name_plural = "Statuszok"
 
+    def __str__(self):
+        return self.name
+
+    def __unicode__(self):
+        return self.name
+
 
 class CiType(abstract_models.ActiveFieldModelAbstract):
     """
@@ -30,6 +36,12 @@ class CiType(abstract_models.ActiveFieldModelAbstract):
         ordering = ["name"]
         verbose_name = "Tipus"
         verbose_name_plural = "Tipusok"
+
+    def __str__(self):
+        return self.name
+
+    def __unicode__(self):
+        return self.name
 
 
 class ConfigurationItem(models.Model):
