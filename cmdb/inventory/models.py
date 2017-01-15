@@ -11,7 +11,7 @@ class CiStatus(abstract_models.ActiveFieldModelAbstract):
     A konfiguracios elemek lehetseges statuszai
     """
 
-    name = models.CharField(max_length=15, null=True)
+    name = models.CharField(unique=True, max_length=15, null=True)
 
     class Meta:
         ordering = ["name"]
@@ -30,7 +30,7 @@ class CiType(abstract_models.ActiveFieldModelAbstract):
     Konfiguracios elem tipusok
     """
 
-    name = models.CharField(max_length=15, null=True)
+    name = models.CharField(unique=True, max_length=15, null=True)
 
     class Meta:
         ordering = ["name"]
@@ -54,11 +54,12 @@ class ConfigurationItem(models.Model):
     # Graf bejarasahoz szukseges attributum
     traverse_mark = models.BooleanField(default=False)
 
-    logical_name = models.CharField(max_length=20, db_index=True, unique=True, help_text="Az elem logikai azonositoja")
+    logical_name = models.CharField(max_length=20, db_index=True, unique=True, blank=False,
+                                    help_text="Az elem logikai azonositoja")
     verbose_name = models.CharField(max_length=250, null=True, help_text="Az elem elnevezese")
     status = models.ForeignKey(CiStatus, related_name="with_status")
     ci_type = models.ForeignKey(CiType, related_name="with_type")
-    last_mod_time = models.DateTimeField(auto_now_add=True, help_text="Utolso modositas datuma")
+    last_mod_time = models.DateTimeField(auto_now=True, help_text="Utolso modositas datuma")
     engineering_group = models.ForeignKey(TechnicalGroups, related_name="engineered_systems", null=True,
                                           help_text="Mernoki csoport")
     administrator_groups = models.ManyToManyField(TechnicalGroups, related_name="administrated_systems",
@@ -86,7 +87,6 @@ class CiRelation(models.Model):
 
     parent_ci = models.ForeignKey(ConfigurationItem, db_index=True, related_name="children")
     child_ci = models.ForeignKey(ConfigurationItem, db_index=True, related_name="parents")
-    active = models.BooleanField(default=True)
 
     class Meta:
         ordering = ["parent_ci__verbose_name"]
@@ -105,7 +105,7 @@ class Vendors(abstract_models.ActiveFieldModelAbstract):
     Hardware gyartok
     """
 
-    name = models.CharField(max_length=15, null=True)
+    name = models.CharField(unique=True ,max_length=15, null=True)
     contact_email = models.EmailField(max_length=15, null=True)
     contact_phone = models.CharField(max_length=15, null=True)
 
@@ -119,7 +119,7 @@ class IpAddress(abstract_models.ActiveFieldModelAbstract):
     """
     Ip cimek es hozzatartozo fqdn-ek
     """
-    ip = models.GenericIPAddressField()
+    ip = models.GenericIPAddressField(unique=True)
     fqdn = models.CharField(max_length=50)
 
 
@@ -190,7 +190,7 @@ class CiApplication(ConfigurationItem):
 
 
 class Companies(abstract_models.ActiveFieldModelAbstract):
-    name = models.CharField(max_length=30, null=True)
+    name = models.CharField(unique=True, max_length=30, null=True)
     contact_name = models.CharField(max_length=30, null=True)
     contact_email = models.EmailField(max_length=30, null=True)
     contact_phone = models.CharField(max_length=15, null=True)
