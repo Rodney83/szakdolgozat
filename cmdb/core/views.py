@@ -7,5 +7,7 @@ from rest_framework.reverse import reverse
 @api_view(['GET'])
 def api_root(request, format=None):
     return Response({
-        'inventory': reverse('configurationitem-list', request=request, format=format)
+        'inventory': reverse('configurationitem-list', request=request, format=format),
+        'changes': reverse('change-list', request=request, format=format),
+        'tasks': reverse('task-list', request=request, format=format),
     })

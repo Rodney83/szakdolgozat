@@ -2,7 +2,7 @@ from __future__ import unicode_literals
 
 from django.db import models
 
-from core import abstract_models
+from cmdb.prototypes import abstract_models
 from core.models import UserProfile, ManagerProfile, TechnicalGroups, ManagementGroups
 
 

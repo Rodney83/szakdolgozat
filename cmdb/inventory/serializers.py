@@ -45,7 +45,7 @@ class ConfigurationItemSerializer(ConfigurationItemMinimalSerializer):
     engineering_group = serializers.SlugRelatedField(slug_field='name', queryset=models.TechnicalGroups.objects.all())
     administrator_groups = serializers.SlugRelatedField(slug_field='name', many=True,
                                                         queryset=models.TechnicalGroups.objects.all())
-    responsible = core.serializers.UserProfileCiDetailSerializer(read_only=True)
+    responsible = core.serializers.UserProfileMinimalSerializer(read_only=True)
     parents = CiRelationParentSerializer(many=True)
     children = CiRelationChildSerializer(read_only=True, many=True)
 
@@ -63,6 +63,7 @@ class ConfigurationItemSerializer(ConfigurationItemMinimalSerializer):
                   'children')
 
     def create(self, validated_data):
+        # TODO: Implement code for storing responsible too
         validated_data.pop('logical_name')
         admin_groups = validated_data.pop('administrator_groups')
         parents = validated_data.pop('parents')
@@ -90,6 +91,7 @@ class ConfigurationItemSerializer(ConfigurationItemMinimalSerializer):
         return instance
 
     def update(self, instance, validated_data):
+        # TODO: Implement code for storing responsible too
         instance.verbose_name = validated_data.get('verbose_name', instance.verbose_name)
         instance.status = validated_data.get('status', instance.status)
         instance.engineering_group = validated_data.get('engineering_group', instance.engineering_group)

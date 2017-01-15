@@ -4,11 +4,11 @@ import models
 import serializers
 
 
-class CiViewSet(viewsets.ModelViewset):
+class CiViewSet(viewsets.ModelViewSet):
     queryset = models.ConfigurationItem.objects.all()
     serializer_class = serializers.ConfigurationItemSerializer
 
 
-class CiRelationViewSet(viewsets.CreateDestroyViewset):
+class CiRelationViewSet(viewsets.CreateDestroyRetrieveViewSet):
     queryset = models.CiRelation.objects.all()
     serializer_class = serializers.CiRelationSerializer
