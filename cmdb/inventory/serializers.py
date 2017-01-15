@@ -38,25 +38,34 @@ class CiRelationChildSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('url', 'child_ci')
 
 
-class ConfigurationItemSerializer(ConfigurationItemMinimalSerializer):
-
+class ConfigurationItemListSerializer(ConfigurationItemMinimalSerializer):
     status = serializers.SlugRelatedField(slug_field='name', queryset=models.CiStatus.objects.all())
     ci_type = serializers.SlugRelatedField(slug_field='name', queryset=models.CiType.objects.all())
     engineering_group = serializers.SlugRelatedField(slug_field='name', queryset=models.TechnicalGroups.objects.all())
+
+    class Meta:
+        model = ConfigurationItemMinimalSerializer.Meta.model
+        fields = ConfigurationItemMinimalSerializer.Meta.fields + (
+            'verbose_name',
+            'status',
+            'ci_type',
+            'engineering_group',
+        )
+
+
+class ConfigurationItemDetailSerializer(ConfigurationItemListSerializer):
+
     administrator_groups = serializers.SlugRelatedField(slug_field='name', many=True,
                                                         queryset=models.TechnicalGroups.objects.all())
     responsible = core.serializers.UserProfileMinimalSerializer(read_only=True)
     parents = CiRelationParentSerializer(many=True)
     children = CiRelationChildSerializer(read_only=True, many=True)
 
-    class Meta(ConfigurationItemMinimalSerializer.Meta):
-        model = ConfigurationItemMinimalSerializer.Meta.model
-        fields = ConfigurationItemMinimalSerializer.Meta.fields + \
-                 ('verbose_name',
-                  'status',
-                  'ci_type',
+    class Meta:
+        model = ConfigurationItemListSerializer.Meta.model
+        fields = ConfigurationItemListSerializer.Meta.fields + \
+                 (
                   'last_mod_time',
-                  'engineering_group',
                   'administrator_groups',
                   'responsible',
                   'parents',
