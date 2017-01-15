@@ -22,3 +22,18 @@ class TaskListViewSet(viewsets.ListViewSet):
 class TaskDetailViewset(viewsets.CreateDestroyRetrieveUpdateViewSet):
     queryset = models.Task.objects.all()
     serializer_class = serializers.TaskDetailSerializer
+
+
+class TaskStatusViewSet(viewsets.ListViewSet):
+    queryset = models.TaskStatus.objects.all()
+    serializer_class = serializers.TaskStatusSerializer
+
+
+class ChangeStateViewSet(viewsets.ListViewSet):
+    queryset = models.ChangeState.objects.all()
+    serializer_class = serializers.ChangeStateSerializer
+
+
+class ClosureCodeViewSet(viewsets.ListViewSet):
+    queryset = models.ClosureCode.objects.all()
+    serializer_class = serializers.ClosureCodeSerializer

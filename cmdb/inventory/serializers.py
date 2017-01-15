@@ -129,3 +129,54 @@ class ConfigurationItemDetailSerializer(ConfigurationItemListSerializer):
         return instance
 
 
+class CiStatusSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        models = models.CiStatus
+        fields = ('id', 'name')
+
+
+class CiTypeSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        models = models.CiType
+        fields = ('id', 'name')
+
+
+class VendorsSerializerMinimal(serializers.HyperlinkedModelSerializer):
+
+    class Meta:
+        model = models.Vendors
+        fields = ('id', 'name')
+
+
+class VendorsSerializer(VendorsSerializerMinimal):
+
+    class Meta:
+        model = VendorsSerializerMinimal.Meta.model
+        fields = VendorsSerializerMinimal.Meta.fields + (
+            'url', 'contact_email', 'contact_phone'
+        )
+
+
+class IpAddressSerializer(serializers.HyperlinkedModelSerializer):
+
+    class Meta:
+        model = models.IpAddress
+        fields = ('url', 'id', 'ip', 'fqdn')
+
+
+class CompaniesMinimalSerializer(serializers.HyperlinkedModelSerializer):
+
+    class Meta:
+        model = models.Companies
+        fields = ('id', 'name')
+
+
+class CompaniesSerializer(CompaniesMinimalSerializer):
+
+    class Meta:
+        model = CompaniesMinimalSerializer.Meta.model
+        fields = CompaniesMinimalSerializer.Meta.fields + (
+            'url', 'contact_name', 'contact_email', 'contact_email'
+        )

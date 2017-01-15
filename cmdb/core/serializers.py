@@ -19,3 +19,6 @@ class ManagerProfileMinimalSerializer(UserProfileMinimalSerializer):
     class Meta:
         model = models.ManagerProfile
         fields = UserProfileMinimalSerializer.Meta.fields
+
+
+# TODO: Create serializers for the Groups

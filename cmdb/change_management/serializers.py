@@ -3,7 +3,19 @@ import models
 import core.serializers
 
 
-class TaskListSerializer(serializers.HyperlinkedModelSerializer):
+class AffectedCiSerializer(serializers.ModelSerializer):
+    affected_ci = serializers.SlugRelatedField(slug_field='logical_name', queryset=models.ConfigurationItem)
+    affected_ci_verbose = serializers.SlugRelatedField(source='affected_ci', slug_field='verbose_name',
+                                                    queryset=models.ConfigurationItem)
+    affected_ci_url = serializers.HyperlinkedRelatedField(source='affected_ci', view_name='configurationitem-detail',
+                                                          read_only=True)
+
+    class Meta:
+        model = models.Task
+        fields = ('affected_ci', 'affected_ci_verbose', 'affected_ci_url')
+
+
+class TaskListSerializer(serializers.HyperlinkedModelSerializer, AffectedCiSerializer):
     parent_change = serializers.SlugRelatedField(slug_field='changeid', source='change', read_only=True)
     parent_change_url = serializers.HyperlinkedRelatedField(source='change', view_name='change-detail', read_only=True)
     taskid = serializers.CharField(read_only=True)
@@ -14,13 +26,15 @@ class TaskListSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = models.Task
-        fields = (
+        fields = AffectedCiSerializer.Meta.fields + (
             'url',
             'parent_change',
             'parent_change_url',
             'taskid',
             'title',
             'status',
+            'affected_ci',
+            'affected_ci_url',
             'closure_code',
             'planned_start',
             'planned_end',
@@ -77,6 +91,7 @@ class ChangeDetailSerializer(ChangeListSerializer):
     approval_group = serializers.SlugRelatedField(slug_field='name', queryset=models.ManagementGroups.objects.all())
     management_approver = core.serializers.ManagerProfileMinimalSerializer(read_only=True)
     tasks = TaskListSerializer(read_only=True, many=True)
+    affected_cis = AffectedCiSerializer(source='tasks', many=True, read_only=True)
 
     class Meta:
         model = ChangeListSerializer.Meta.model
@@ -89,5 +104,27 @@ class ChangeDetailSerializer(ChangeListSerializer):
             'approval_group',
             'management_approval',
             'management_approver',
-            'tasks'
+            'tasks',
+            'affected_cis',
         )
+
+
+class TaskStatusSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = models.TaskStatus
+        fields = ('id', 'name')
+
+
+class ChangeStateSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = models.ChangeState
+        fields = ('id', 'name')
+
+
+class ClosureCodeSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = models.ChangeState
+        fields = ('id', 'name')

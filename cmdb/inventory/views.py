@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from cmdb.prototypes import viewsets
 import models
 import serializers
@@ -17,3 +16,6 @@ class CiDetailViewSet(viewsets.CreateDestroyRetrieveUpdateViewSet):
 class CiRelationViewSet(viewsets.CreateDestroyRetrieveViewSet):
     queryset = models.CiRelation.objects.all()
     serializer_class = serializers.CiRelationSerializer
+
+
+#TODO: Create ViewSets for the misc. Serializers

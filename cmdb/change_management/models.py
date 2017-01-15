@@ -4,6 +4,7 @@ from django.db import models
 
 from cmdb.prototypes import abstract_models
 from core.models import UserProfile, ManagerProfile, TechnicalGroups, ManagementGroups
+from inventory.models import ConfigurationItem
 
 
 class TaskStatus(abstract_models.ActiveFieldModelAbstract):
@@ -51,6 +52,7 @@ class Task(models.Model):
     closure_code = models.ForeignKey(ClosureCode, null=True)
     open_time = models.DateTimeField(auto_now_add=True)
     planned_start = models.DateTimeField(auto_now_add=True)
+    affected_ci = models.ForeignKey(ConfigurationItem, related_name='related_tasks')
     planned_end = models.DateTimeField(auto_now_add=True)
     description = models.TextField(max_length=1000)
     fallback = models.TextField(max_length=500, null=True)

@@ -7,3 +7,6 @@ router.register(r'', views.CiDetailViewSet)
 router.register(r'relations', views.CiRelationViewSet)
 
 urlpatterns = router.urls
+
+
+#TODO: Create url routers for the misc. views

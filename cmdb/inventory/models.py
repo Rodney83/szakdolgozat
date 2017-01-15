@@ -122,6 +122,12 @@ class IpAddress(abstract_models.ActiveFieldModelAbstract):
     ip = models.GenericIPAddressField(unique=True)
     fqdn = models.CharField(max_length=50)
 
+    def __str__(self):
+        return self.ip
+
+    def __unicode__(self):
+        return self.ip
+
 
 class CiNetworkNode(ConfigurationItem):
     hardware_vendor = models.ForeignKey(Vendors, related_name="network_nodes")
