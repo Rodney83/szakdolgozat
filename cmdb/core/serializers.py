@@ -21,4 +21,15 @@ class ManagerProfileMinimalSerializer(UserProfileMinimalSerializer):
         fields = UserProfileMinimalSerializer.Meta.fields
 
 
-# TODO: Create serializers for the Groups
+class TechnicalGroupsSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = models.TechnicalGroups
+        fields = ('id', 'name')
+
+
+class ManagementGroupsSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = models.ManagementGroups
+        fields = ('id', 'name')

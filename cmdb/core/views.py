@@ -1,17 +1,32 @@
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from rest_framework.reverse import reverse
+from cmdb.prototypes import viewsets
+import models
+import serializers
 
 
-@api_view(['GET'])
-def api_root(request, format=None):
-    return Response({
-        'inventory': reverse('configurationitem-list', request=request, format=format),
-        'changes': reverse('change-list', request=request, format=format),
-        'tasks': reverse('task-list', request=request, format=format),
-        'taskstatus': reverse('taskstatus-list', request=request, format=format),
-        'changestates': reverse('changestate-list', request=request, format=format),
-        'closurecodes': reverse('closurecode-list', request=request, format=format),
-    })
+class CoreRootView(viewsets.RootView):
+    url_list = {
+        'User Profiles': 'userprofile-list',
+        'Manager Profiles': 'managerprofile-list',
+        'Technical Groups': 'technicalgroups-list',
+        'Management Groups': 'managementgroups-list',
+    }
 
-#TODO: create views for core serializers and add them to api root
+
+class UserProfileViewSet(viewsets.ListRetrieveViewSet):
+    queryset = models.UserProfile.objects.all()
+    serializer_class = serializers.UserProfileMinimalSerializer
+
+
+class ManagerProfileViewSet(viewsets.ListRetrieveViewSet):
+    queryset = models.ManagerProfile.objects.all()
+    serializer_class = serializers.ManagerProfileMinimalSerializer
+
+
+class TechnicalGroupViewSet(viewsets.ListRetrieveViewSet):
+    queryset = models.TechnicalGroups.objects.all()
+    serializer_class = serializers.TechnicalGroupsSerializer
+
+
+class ManagementGroupViewSet(viewsets.ListRetrieveViewSet):
+    queryset = models.ManagementGroups.objects.all()
+    serializer_class = serializers.ManagementGroupsSerializer

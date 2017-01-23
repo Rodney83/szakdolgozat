@@ -132,7 +132,7 @@ class IpAddress(abstract_models.ActiveFieldModelAbstract):
 class CiNetworkNode(ConfigurationItem):
     hardware_vendor = models.ForeignKey(Vendors, related_name="network_nodes")
     number_of_ports = models.PositiveIntegerField(null=True)
-    ip_addresses = models.ForeignKey(IpAddress)
+    ip_addresses = models.ManyToManyField(IpAddress)
 
 
 class CiServerNode(ConfigurationItem):

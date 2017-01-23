@@ -4,9 +4,10 @@ import core.serializers
 
 
 class AffectedCiSerializer(serializers.ModelSerializer):
-    affected_ci = serializers.SlugRelatedField(slug_field='logical_name', queryset=models.ConfigurationItem)
+    affected_ci = serializers.SlugRelatedField(slug_field='logical_name',
+                                               queryset=models.ConfigurationItem.objects.all())
     affected_ci_verbose = serializers.SlugRelatedField(source='affected_ci', slug_field='verbose_name',
-                                                    queryset=models.ConfigurationItem)
+                                                       read_only=True)
     affected_ci_url = serializers.HyperlinkedRelatedField(source='affected_ci', view_name='configurationitem-detail',
                                                           read_only=True)
 
@@ -33,8 +34,6 @@ class TaskListSerializer(serializers.HyperlinkedModelSerializer, AffectedCiSeria
             'taskid',
             'title',
             'status',
-            'affected_ci',
-            'affected_ci_url',
             'closure_code',
             'planned_start',
             'planned_end',
