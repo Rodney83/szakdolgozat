@@ -33,16 +33,16 @@ class Command(BaseCommand):
         management_groups = ['Special Management', 'Corporate Management', 'Spy Management', 'Something Management']
 
         users = [
-            {'username': 'user1', 'first_name': 'Jakab', 'last_name': 'Gipsz', 'email': 'gipsz.jakab@examlpe.com'},
-            {'username': 'user2', 'first_name': 'Max', 'last_name': 'Power', 'email': 'power.max@examlpe.com'},
-            {'username': 'user3', 'first_name': 'Homer', 'last_name': 'Simpson', 'email': 'simpson.homer@examlpe.com'},
-            {'username': 'user4', 'first_name': 'Eric', 'last_name': 'Cartman', 'email': 'cartman.eric@examlpe.com'},
-            {'username': 'user5', 'first_name': 'Sherlock', 'last_name': 'Holmes', 'email': 'sherlock@examlpe.com'},
+            {'username': 'user1', 'first_name': 'Jakab', 'last_name': 'Gipsz', 'email': 'gipsz.jakab@example.com'},
+            {'username': 'user2', 'first_name': 'Max', 'last_name': 'Power', 'email': 'power.max@example.com'},
+            {'username': 'user3', 'first_name': 'Homer', 'last_name': 'Simpson', 'email': 'simpson.homer@example.com'},
+            {'username': 'user4', 'first_name': 'Eric', 'last_name': 'Cartman', 'email': 'cartman.eric@example.com'},
+            {'username': 'user5', 'first_name': 'Sherlock', 'last_name': 'Holmes', 'email': 'sherlock@example.com'},
 
         ]
 
         managers = [
-            {'username': 'manager1', 'first_name': 'Mortimer', 'last_name': 'Duke', 'email': 'morty.duke@examlpe.com'},
+            {'username': 'manager1', 'first_name': 'Mortimer', 'last_name': 'Duke', 'email': 'morty.duke@example.com'},
             {'username': 'manager2', 'first_name': 'Lando', 'last_name': 'Calrissian', 'email': 'lando@cloudcity.com'},
             {'username': 'manager3', 'first_name': 'James', 'last_name': 'T. Kirk',
              'email': 'james.t.kirk@enterprise.com'},
@@ -79,4 +79,4 @@ class Command(BaseCommand):
             core.models.UserProfile.objects.get_or_create(password='qwe12345', **item)
 
         for item in managers:
-            core.models.UserProfile.objects.get_or_create(password='qwe12345', **item)
+            core.models.ManagerProfile.objects.get_or_create(password='qwe12345', **item)
