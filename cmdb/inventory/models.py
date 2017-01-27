@@ -122,6 +122,11 @@ class IpAddress(abstract_models.ActiveFieldModelAbstract):
     ip = models.GenericIPAddressField(unique=True)
     fqdn = models.CharField(max_length=50)
 
+    class Meta:
+        ordering = ["ip"]
+        verbose_name = "IP cime"
+        verbose_name_plural = "IP cimek"
+
     def __str__(self):
         return self.ip
 
@@ -133,6 +138,11 @@ class CiNetworkNode(ConfigurationItem):
     hardware_vendor = models.ForeignKey(Vendors, related_name="network_nodes")
     number_of_ports = models.PositiveIntegerField(null=True)
     ip_addresses = models.ManyToManyField(IpAddress)
+
+    class Meta:
+        ordering = ["logical_name"]
+        verbose_name = "Halozati Eszkoz"
+        verbose_name_plural = "Halozati Eszkozok"
 
 
 class CiServerNode(ConfigurationItem):
@@ -146,6 +156,11 @@ class CiServerNode(ConfigurationItem):
     hardware_vendor = models.ForeignKey(Vendors, related_name="servers", null=True)
     serial_number = models.CharField(max_length=150, null=True, help_text="Serial number")
 
+    class Meta:
+        ordering = ["logical_name"]
+        verbose_name = "Szerver Eszkoz"
+        verbose_name_plural = "Szerver Eszkozok"
+
 
 class CiOperatingSystem(ConfigurationItem):
     """
@@ -157,9 +172,19 @@ class CiOperatingSystem(ConfigurationItem):
     network_interfaces = models.ManyToManyField(IpAddress)
     hostname = models.CharField(max_length=250, null=True, help_text="Hostname known by the server")
 
+    class Meta:
+        ordering = ["logical_name"]
+        verbose_name = "Operacios Rendszer"
+        verbose_name_plural = "Operacios Rendszerek"
+
 
 class MiddlewareType(abstract_models.ActiveFieldModelAbstract):
     name = models.CharField(max_length=15, null=True)
+
+    class Meta:
+        ordering = ["name"]
+        verbose_name = "Middleware Tipus"
+        verbose_name_plural = "Middleware Tipusok"
 
 
 class CiMiddlewareInstallation(ConfigurationItem):
@@ -171,6 +196,11 @@ class CiMiddlewareInstallation(ConfigurationItem):
     patch_level = models.CharField(max_length=15, null=True, help_text="Patch level of the middleware.")
     installation_path = models.CharField(max_length=200, null=True, help_text="Utvonal")
     description = models.TextField(max_length=500, null=True, help_text="Leiras")
+
+    class Meta:
+        ordering = ["logical_name"]
+        verbose_name = "Middleware Installacio"
+        verbose_name_plural = "Middleware Installaciok"
 
 
 class CiMiddlewareInstance(ConfigurationItem):
@@ -187,6 +217,11 @@ class CiMiddlewareInstance(ConfigurationItem):
     category = models.IntegerField(choices=OBJECT_TYPES, default=3, help_text="Kategoria")
     comment = models.TextField(max_length=500, null=True, help_text="Comment")
 
+    class Meta:
+        ordering = ["logical_name"]
+        verbose_name = "Middleware Peldany"
+        verbose_name_plural = "Middleware Peldanyok"
+
 
 class CiApplication(ConfigurationItem):
     name = models.CharField(max_length=50, null=True, help_text="Applikacio neve")
@@ -194,12 +229,22 @@ class CiApplication(ConfigurationItem):
     release = models.CharField(max_length=30)
     customer_environment = models.CharField(max_length=30)
 
+    class Meta:
+        ordering = ["logical_name"]
+        verbose_name = "Alkalmazas"
+        verbose_name_plural = "Alkalmazasok"
+
 
 class Companies(abstract_models.ActiveFieldModelAbstract):
     name = models.CharField(unique=True, max_length=30, null=True)
     contact_name = models.CharField(max_length=30, null=True)
     contact_email = models.EmailField(max_length=30, null=True)
     contact_phone = models.CharField(max_length=15, null=True)
+
+    class Meta:
+        ordering = ["name"]
+        verbose_name = "Vallalat"
+        verbose_name_plural = "Vallalatok"
 
 
 class CiBusinessContract(ConfigurationItem):
@@ -218,3 +263,8 @@ class CiBusinessContract(ConfigurationItem):
     severity = models.IntegerField(choices=OBJECT_TYPES, default=3, help_text="A rendelkezesre allas prioritasa")
     primary_mgmt_contact = models.ForeignKey(ManagerProfile, related_name="pri_contact_for")
     mgmt_group = models.ManyToManyField(ManagementGroups, related_name="managed_bc")
+
+    class Meta:
+        ordering = ["logical_name"]
+        verbose_name = "Uzleti Szerzodes"
+        verbose_name_plural = "Uzleti Szerzodesek"
