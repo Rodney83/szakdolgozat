@@ -139,11 +139,11 @@ class CiServerNode(ConfigurationItem):
     """
     ServerNode-okra vonatkoz specifikus adatok
     """
-    console_address = models.ForeignKey(IpAddress)
+    console_address = models.ForeignKey(IpAddress, related_name='server_consoles', null=True)
     memory_size = models.PositiveIntegerField(null=True, help_text="Memory size in MB")
     cpu_cores = models.PositiveIntegerField(null=True, help_text="Number of CPU cores")
     description = models.TextField(max_length=2500, null=True, blank=True, help_text="Description of the server")
-    hardware_vendor = models.ForeignKey(Vendors, related_name="servers")
+    hardware_vendor = models.ForeignKey(Vendors, related_name="servers", null=True)
     serial_number = models.CharField(max_length=150, null=True, help_text="Serial number")
 
 
@@ -154,7 +154,7 @@ class CiOperatingSystem(ConfigurationItem):
     os_type = models.CharField(max_length=150)
     major_version = models.CharField(max_length=20)
     minor_version = models.CharField(max_length=20)
-    network_interfaces = models.ForeignKey(IpAddress)
+    network_interfaces = models.ManyToManyField(IpAddress)
     hostname = models.CharField(max_length=250, null=True, help_text="Hostname known by the server")
 
 
@@ -183,7 +183,7 @@ class CiMiddlewareInstance(ConfigurationItem):
         (3, "Low"),
     )
 
-    admi_user = models.CharField(max_length=25, null=False, help_text="Admin felhasznalonev")
+    admin_user = models.CharField(max_length=25, null=False, help_text="Admin felhasznalonev")
     category = models.IntegerField(choices=OBJECT_TYPES, default=3, help_text="Kategoria")
     comment = models.TextField(max_length=500, null=True, help_text="Comment")
 
@@ -192,7 +192,7 @@ class CiApplication(ConfigurationItem):
     name = models.CharField(max_length=50, null=True, help_text="Applikacio neve")
     vendor = models.ForeignKey(Vendors, related_name="applications")
     release = models.CharField(max_length=30)
-    customer_evironment = models.CharField(max_length=30)
+    customer_environment = models.CharField(max_length=30)
 
 
 class Companies(abstract_models.ActiveFieldModelAbstract):

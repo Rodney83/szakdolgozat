@@ -91,15 +91,17 @@ class CiRelationChildSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('url', 'child_ci')
 
 
-class ConfigurationItemListSerializer(ConfigurationItemMinimalSerializer):
+class ConfigurationItemListSerializer(serializers.HyperlinkedModelSerializer):
     logical_name = serializers.CharField(read_only=True)
     status = serializers.SlugRelatedField(slug_field='name', queryset=models.CiStatus.objects.all())
     ci_type = serializers.SlugRelatedField(slug_field='name', queryset=models.CiType.objects.all())
     engineering_group = serializers.SlugRelatedField(slug_field='name', queryset=models.TechnicalGroups.objects.all())
 
     class Meta:
-        model = ConfigurationItemMinimalSerializer.Meta.model
-        fields = ConfigurationItemMinimalSerializer.Meta.fields + (
+        model = models.ConfigurationItem
+        fields = (
+            'url'
+            'logical_name',
             'verbose_name',
             'status',
             'ci_type',
@@ -107,8 +109,12 @@ class ConfigurationItemListSerializer(ConfigurationItemMinimalSerializer):
         )
 
 
-class ConfigurationItemDetailSerializer(ConfigurationItemListSerializer):
+class ConfigurationItemDetailSerializer(serializers.ModelSerializer):
 
+    logical_name = serializers.CharField(read_only=True)
+    status = serializers.SlugRelatedField(slug_field='name', queryset=models.CiStatus.objects.all())
+    ci_type = serializers.SlugRelatedField(slug_field='name', queryset=models.CiType.objects.all())
+    engineering_group = serializers.SlugRelatedField(slug_field='name', queryset=models.TechnicalGroups.objects.all())
     administrator_groups = serializers.SlugRelatedField(slug_field='name', many=True,
                                                         queryset=models.TechnicalGroups.objects.all())
     responsible = serializers.SlugRelatedField(slug_field='email', queryset=models.UserProfile.objects.all())
@@ -116,14 +122,19 @@ class ConfigurationItemDetailSerializer(ConfigurationItemListSerializer):
     children = CiRelationChildSerializer(read_only=True, many=True)
 
     class Meta:
-        model = ConfigurationItemListSerializer.Meta.model
-        fields = ConfigurationItemListSerializer.Meta.fields + \
-                 (
-                  'last_mod_time',
-                  'administrator_groups',
-                  'responsible',
-                  'parents',
-                  'children')
+        model = models.ConfigurationItem
+        fields = (
+            'logical_name',
+            'verbose_name',
+            'status',
+            'ci_type',
+            'engineering_group',
+            'last_mod_time',
+            'administrator_groups',
+            'responsible',
+            'parents',
+            'children',
+        )
 
     def create(self, validated_data):
         admin_groups = validated_data.pop('administrator_groups')
@@ -150,30 +161,35 @@ class ConfigurationItemDetailSerializer(ConfigurationItemListSerializer):
         return instance
 
     def update(self, instance, validated_data):
-        instance.verbose_name = validated_data.get('verbose_name', instance.verbose_name)
-        instance.status = validated_data.get('status', instance.status)
-        instance.engineering_group = validated_data.get('engineering_group', instance.engineering_group)
-        admin_groups = validated_data.get('administrator_groups', [])
-        instance.administrator_groups.clear()
-        instance.administrator_groups.add(*admin_groups)
-        instance.responsible = validated_data.get('responsible', None)
+
+        try:
+            admin_groups = validated_data.pop('administrator_groups')
+        except KeyError:
+            pass
+        else:
+            instance.administrator_groups.set(admin_groups)
+
+        try:
+            new_parents = validated_data.pop('parents')
+        except KeyError:
+            pass
+        else:
+            existing_parents = list(instance.parents.all().values_list('parent_ci__logical_name', flat=True))
+            for item in new_parents:
+                try:
+                    ci = models.ConfigurationItem.objects.get(logical_name=item['parent_ci']['logical_name'])
+                except models.ConfigurationItem.DoesNotExist:
+                    print ('Given parent Ci does not exist')
+                else:
+                    models.CiRelation.objects.get_or_create(parent_ci=ci, child_ci=instance)
+                    if ci.logical_name in existing_parents:
+                        existing_parents.remove(ci.logical_name)
+            for item in existing_parents:
+                models.CiRelation.objects.get(parent_ci__logical_name=item).delete()
+
+        for key, value in validated_data.items():
+            setattr(instance, key, value)
         instance.save()
-
-        existing_parents = list(instance.parents.all().values_list('parent_ci__logical_name', flat=True))
-        new_parents = validated_data.get('parents', [])
-
-        for item in new_parents:
-            try:
-                ci = models.ConfigurationItem.objects.get(logical_name=item['parent_ci']['logical_name'])
-            except models.ConfigurationItem.DoesNotExist:
-                print ('Given parent Ci does not exist')
-            else:
-                models.CiRelation.objects.get_or_create(parent_ci=ci, child_ci=instance)
-                if ci.logical_name in existing_parents:
-                    existing_parents.remove(ci.logical_name)
-
-        for item in existing_parents:
-            models.CiRelation.objects.get(parent_ci__logical_name=item).delete()
 
         return instance
 
@@ -201,13 +217,167 @@ class CiNetworkNodeDetailSerializer(ConfigurationItemDetailSerializer):
     def create(self, validated_data):
         ip = validated_data.pop('ip_addresses')
         instance = super(CiNetworkNodeDetailSerializer, self).create(validated_data)
-        instance.ip_addresses.add(*ip)
+        instance.ip_addresses.set(ip)
         return instance
 
     def update(self, instance, validated_data):
-        instance.hardware_vendor = validated_data.get('hardware_vendor', instance.hardware_vendor)
-        instance.number_of_ports = validated_data.get('number_of_ports', instance.number_of_ports)
-        ip = validated_data.get('ip_addresses', [])
-        instance.ip_addresses.clear()
-        instance.ip_addresses.add(*ip)
+        try:
+            ip = validated_data.pop('ip_addresses')
+        except KeyError:
+            pass
+        else:
+            instance.ip_addresses.set(ip)
+
         return super(CiNetworkNodeDetailSerializer, self).update(validated_data)
+
+
+class CiServerNodeListSerializer(ConfigurationItemListSerializer):
+
+    class Meta:
+        model = models.CiServerNode
+        fields = ConfigurationItemListSerializer.Meta.fields
+
+
+class CiServerNodeDetailSerializer(ConfigurationItemDetailSerializer):
+
+    console_address = serializers.SlugRelatedField(slug_field='ip', queryset=models.IpAddress.objects.all())
+    hardware_vendor = serializers.SlugRelatedField(slug_field='name', queryset=models.Vendors.objects.all())
+
+    class Meta:
+        model = models.CiServerNode
+        fields = ConfigurationItemDetailSerializer.Meta.fields + (
+            'console_address',
+            'memory_size',
+            'cpu_cores',
+            'description',
+            'hardware_vendor',
+            'serial_number',
+        )
+
+
+class CiOperatingSystemListSerializer(ConfigurationItemListSerializer):
+
+    class Meta:
+        model = models.CiOperatingSystem
+        fields = ConfigurationItemListSerializer.Meta.fields
+
+
+class CiOperatingSystemDetailSerializer(ConfigurationItemDetailSerializer):
+
+    network_interfaces = serializers.SlugRelatedField(slug_field='ip',
+                                                      queryset=models.IpAddress.objects.all(), many=True
+                                                      )
+
+    class Meta:
+        model = models.CiOperatingSystem
+        fields = ConfigurationItemDetailSerializer.Meta.fields + (
+            'os_type',
+            'major_version',
+            'minor_version',
+            'network_interfaces',
+            'hostname',
+        )
+
+    def create(self, validated_data):
+        ip = validated_data.pop('network_interfaces')
+        instance = super(CiOperatingSystemDetailSerializer, self).create(validated_data)
+        instance.network_interfaces.set(ip)
+        return instance
+
+    def update(self, instance, validated_data):
+        try:
+            ip = validated_data.pop('network_interfaces')
+        except KeyError:
+            pass
+        else:
+            instance.network_interfaces.set(ip)
+
+        return super(CiOperatingSystemDetailSerializer, self).update(validated_data)
+
+
+class CiMiddlewareInstallationListSerializer(ConfigurationItemListSerializer):
+
+    class Meta:
+        model = models.CiMiddlewareInstallation
+        fields = ConfigurationItemListSerializer.Meta.fields
+
+
+class CiMiddlewareInstallationDetailSerializer(ConfigurationItemDetailSerializer):
+
+    mdlw_type = serializers.SlugRelatedField(slug_field='name', queryset=models.MiddlewareType.objects.all())
+
+    class Meta:
+        model = models.CiMiddlewareInstallation
+        fields = ConfigurationItemDetailSerializer.Meta.fields + (
+            'mdlw_type',
+            'version',
+            'patch_level',
+            'installation_path',
+            'description',
+        )
+
+
+class CiMiddlewareInstanceListSerializer(ConfigurationItemListSerializer):
+    class Meta:
+        model = models.CiMiddlewareInstance
+        fields = ConfigurationItemListSerializer.Meta.fields
+
+
+class CiMiddlewareInstanceDetailSerializer(ConfigurationItemDetailSerializer):
+
+    class Meta:
+        model = models.CiMiddlewareInstance
+        fields = ConfigurationItemDetailSerializer.Meta.fields + (
+            'admin_user',
+            'category',
+            'comment',
+        )
+
+
+class CiApplicationListSerializer(ConfigurationItemListSerializer):
+
+    class Meta:
+        model = models.CiApplication
+        fields = ConfigurationItemListSerializer.Meta.fields
+
+
+class CiApplicationDetailSerializer(ConfigurationItemDetailSerializer):
+
+    vendor = serializers.SlugRelatedField(slug_field='name', queryset=models.Vendors.objects.all())
+
+    class Meta:
+        model = models.CiApplication
+        fields = ConfigurationItemDetailSerializer.Meta.fields + (
+            'name',
+            'vendor',
+            'release',
+            'customer_environment',
+        )
+
+
+class CiBusinessContractListSerializer(ConfigurationItemListSerializer):
+
+    class Meta:
+        model = models.CiBusinessContract
+        fields = ConfigurationItemListSerializer.Meta.fields
+
+
+class CiBusinessContractDetailSerializer(ConfigurationItemDetailSerializer):
+
+    company = serializers.SlugRelatedField(slug_field='name', queryset=models.Companies.objects.all())
+    primary_mgmt_contact = serializers.SlugRelatedField(slug_field='email',
+                                                        queryset=models.ManagerProfile.objects.all())
+    mgmt_group = serializers.SlugRelatedField(slug_field='name', queryset=models.ManagementGroups.objects.all(),
+                                              many=True)
+
+    class Meta:
+        model = models.CiApplication
+        fields = ConfigurationItemDetailSerializer.Meta.fields + (
+            'company',
+            'availability',
+            'maintenance_window',
+            'severity',
+            'primary_mgmt_contact',
+            'mgmt_group',
+        )
+
