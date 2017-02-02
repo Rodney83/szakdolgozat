@@ -100,7 +100,7 @@ class ConfigurationItemListSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = models.ConfigurationItem
         fields = (
-            'url'
+            'url',
             'logical_name',
             'verbose_name',
             'status',
