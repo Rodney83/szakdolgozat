@@ -1,9 +1,9 @@
-
 /.idea/
 .babelrc
-.gitignore
 README.md
 index.html
 package.json
 src/
 webpack.config.js
+*.pyc
+00*.py

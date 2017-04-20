@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+
+{% load staticfiles %}
+
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+
+    <title>CMDB</title>
+    <!--&lt;!&ndash; Bootstrap core CSS &ndash;&gt;-->
+    <link href="{% static 'core/plugins/adminlte/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'core/plugins/adminlte/dist/css/AdminLTE.min.css' %}">
+    <link rel="stylesheet" href="{% static 'core/plugins/adminlte/dist/css/skins/skin-blue.min.css' %}">
+    <link rel="stylesheet" href="{% static 'core/plugins/font-awesome/css/font-awesome.min.css' %}">
+
+</head>
+
+<body class="hold-transition login-page">
+<div class="login-box">
+    <div class="login-logo">
+        <b>Configuration Management DataBase</b>
+    </div><!-- /.login-logo -->
+    <div class="login-box-body">
+        <p class="login-box-msg">Sign in to start your session</p>
+        <form method="post" name="loginform" action="{% url 'rest_framework:login' %}"
+              class="form-signin" role="form">
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+            {% for error in form.non_field_errors %}
+            <div class="alert alert-danger alert-dismissable">
+                <h4><i class="fa fa-ban"></i> Authentication failed!</h4>
+                {{error}}
+            </div>
+            {% endfor %}
+            {% endif %}
+
+            <div class="form-group has-feedback">
+                <input type="text" class="form-control" placeholder="Username" name="username" autofocus>
+                <span class="fa fa-envelope form-control-feedback"></span>
+            </div>
+            <div class="form-group has-feedback">
+                <input type="password" class="form-control" placeholder="Password" name="password">
+                <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+            </div>
+            <div class="row">
+                <div class="col-xs-8">
+
+                </div>
+                <div class="col-xs-4">
+                    <button id="sign-in-btn" type="submit" class="btn btn-primary btn-block btn-flat">Sign In</button>
+                </div><!-- /.col -->
+            </div>
+        </form>
+
+    </div><!-- /.login-box-body -->
+</div><!-- /.login-box -->
+</body>
+</html>
