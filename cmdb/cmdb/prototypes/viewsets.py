@@ -80,13 +80,14 @@ class ModelViewSet(viewsets.ModelViewSet):
     A serializer mappolassal megadhatok kulonbozo http keresekhez kulonbozo serializerek
     """
     permission_classes = (permissions.DjangoModelPermissions, )
+    serializer_class = None
     serializer_map = {}
 
     def get_serializer_class(self):
         try:
             return self.serializer_map[self.action]
         except KeyError:
-            return super(ModelViewSet, self).get_serializer_class()
+            return super(self.__class__, self).get_serializer_class()
 
     class Meta:
         abstract = True

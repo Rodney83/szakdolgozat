@@ -15,13 +15,16 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
+
 from views import AppRootView
+from core.views import MainView
 
 urlpatterns = [
-    url(r'^$', AppRootView.as_view(), name=""),
+    url(r'^$', MainView.as_view(), name="main"),
+    url(r'^', include('cmdb.auth_urls')),
     url(r'^admin/', admin.site.urls),
-    url(r'^api-auth/', include('rest_framework.urls')),
-    url(r'^core/', include('core.urls')),
-    url(r'^inventory/', include('inventory.urls')),
-    url(r'^changemgmt/', include('change_management.urls')),
+    url(r'^api/$', AppRootView.as_view(), name="root"),
+    url(r'^api/core/', include('core.urls')),
+    url(r'^api/inventory/', include('inventory.urls')),
+    url(r'^api/changemgmt/', include('change_management.urls')),
 ]

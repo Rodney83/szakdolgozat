@@ -8,4 +8,3 @@ class AppRootView(viewsets.RootView):
         'Change Management': 'change-root',
         'Core': 'core-root',
     }
-

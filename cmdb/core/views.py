@@ -1,3 +1,4 @@
+from django.views import generic
 from cmdb.prototypes import viewsets
 import models
 import serializers
@@ -10,6 +11,10 @@ class CoreRootView(viewsets.RootView):
         'Technical Groups': 'technicalgroups-list',
         'Management Groups': 'managementgroups-list',
     }
+
+
+class MainView(generic.TemplateView):
+    template_name = "core/main.html"
 
 
 class UserProfileViewSet(viewsets.ListRetrieveViewSet):

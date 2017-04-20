@@ -146,7 +146,10 @@ class ConfigurationItemDetailSerializer(serializers.ModelSerializer):
         else:
             first_part = 'UNDEFINED'
 
-        second_part = models.ConfigurationItem.objects.aggregate(Max('id'))['id__max'] + 1
+        try:
+            second_part = models.ConfigurationItem.objects.aggregate(Max('id'))['id__max'] + 1
+        except TypeError:
+            second_part = 1
         logical_name = first_part + str(second_part).zfill(5)
         instance = self.Meta.model.objects.create(logical_name=logical_name, **validated_data)
         instance.administrator_groups.add(*admin_groups)
