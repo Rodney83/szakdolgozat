@@ -262,9 +262,9 @@ desired effect
         <li class="header">Options</li>
       </ul>
       {% verbatim %}
-      <ul class="sidebar-menu" ng-repeat="app in apps">
+      <ul class="sidebar-menu">
         <!-- Optionally, you can add icons to the links -->
-        <li><a href={{app.url}}><i class="fa fa-link"></i> <span>{{app.text}}</span></a></li>
+        <li><a href=x><i class="fa fa-link"></i> <span></span></a></li>
       </ul>
       {% endverbatim %}
       <!-- /.sidebar-menu -->
@@ -275,7 +275,7 @@ desired effect
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
   <!--<div class="content-wrapper" ng-app="ContentApp">-->
-    <div ng-view></div>
+    <div></div>
     <!--&lt;!&ndash; Content Header (Page header) &ndash;&gt;-->
     <!--<section class="content-header">-->
       <!--<h1>-->
@@ -395,12 +395,6 @@ desired effect
 <script src="{% static 'core/plugins/adminlte/bootstrap/js/bootstrap.min.js' %}"></script>
 <!-- AdminLTE App -->
 <script src="{% static 'core/plugins/adminlte/dist/js/app.min.js' %}"></script>
-
-<!-- Angular JS modules -->
-<script src="{% static 'core/frontend/app.js' %}"></script>
-<script src="{% static 'core/frontend/controllers/sidebarController.js' %}"></script>
-<script src="{% static 'core/frontend/controllers/inventoryController.js' %}"></script>
-<script src="{% static 'core/frontend/controllers/changeController.js' %}"></script>
 
 <!-- Optionally, you can add Slimscroll and FastClick plugins.
      Both of these plugins are recommended to enhance the
