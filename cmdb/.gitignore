@@ -1,8 +1,6 @@
 /.idea/
-.babelrc
 README.md
 index.html
-package.json
 src/
 webpack.config.js
 *.pyc
