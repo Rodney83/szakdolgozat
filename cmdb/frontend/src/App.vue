@@ -1,6 +1,5 @@
 <template>
   <div class="wrapper">
-
   <!-- Main Header -->
   <header class="main-header">
 
@@ -25,14 +24,13 @@
           <li class="dropdown user user-menu">
             <!-- Menu Toggle Button -->
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-              <span class="hidden-xs">Random Name</span>
+              <span class="hidden-xs">{{user.name}}</span>
             </a>
             <ul class="dropdown-menu">
               <!-- The user image in the menu -->
               <li class="user-header">
                 <p>
-                  Random Name - Web Developer
-                  <small>Member since Nov. 2012</small>
+                  {{user.name}}
                 </p>
               </li>
               <!-- Menu Body -->
@@ -74,16 +72,26 @@
       <!-- Sidebar user panel (optional) -->
       <div class="user-panel">
         <div class="pull-left image">
-          <img src="{% static 'core/plugins/adminlte/dist/img/user2-160x160.jpg' %}" class="img-circle" alt="User Image">
+          <img src="./assets/logo.png" class="img-circle" alt="User Image">
         </div>
         <div class="pull-left info">
-          <p>Random Name</p>
+          <p>{{user.name}}</p>
         </div>
       </div>
 
+      <!-- Sidebar Menu -->
       <ul class="sidebar-menu">
         <!-- Optionally, you can add icons to the links -->
-        <li><a href=x><i class="fa fa-link"></i><span>Something</span></a></li>
+        <li v-bind:class="{ active: inventory}">
+          <router-link to="/inventory">
+            <i class="fa fa-link"></i> <span>Inventory</span>
+          </router-link>
+        </li>
+        <li v-bind:class="{ active: changeManagement}">
+          <router-link to="/changemanagement" v-bind:class="{ active: changeManagement}">
+            <i class="fa fa-link"></i><span>Change Management</span>
+          </router-link>
+        </li>
       </ul>
       <!-- /.sidebar-menu -->
     </section>
@@ -92,25 +100,7 @@
 
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
-    <!-- Content Header (Page header) -->
-    <section class="content-header">
-      <h1>
-        Page Header
-        <small>Optional description</small>
-      </h1>
-      <ol class="breadcrumb">
-        <li><a href="#"><i class="fa fa-dashboard"></i> Level</a></li>
-        <li class="active">Here</li>
-      </ol>
-    </section>
-
-    <!-- Main content -->
-    <section class="content">
-      <div id="App"></div>
-      <!-- Your Page Content Here -->
-
-    </section>
-    <!-- /.content -->
+      <mainContent v-bind:activeModule="activeModule"></mainContent>
   </div>
   <!-- /.content-wrapper -->
 
@@ -127,41 +117,33 @@
 </template>
 
 <script>
+import mainContent from './mainContent.vue'
+
 export default {
-  name: 'app',
-  data () {
-    return {
-      msg: 'Welcome to Your Vue.js App'
+    name: 'app',
+    components: {mainContent},
+    data () {
+        return {
+            activeModule: 'Valami',
+            inventory: false,
+            changeManagement: false,
+            user: {
+                name: 'Tamas Pasztor'
+            },
+        }
+    },
+    created() {
+        Event.$on('inventoryMounted', () => {
+            this.inventory = true;
+            this.changeManagement = false;
+            this.activeModule = 'Inventory';
+        })
+        Event.$on('changeManagementMounted', () => {
+            this.inventory = false;
+            this.changeManagement = true;
+            this.activeModule = 'Change Management';
+        })
     }
-  }
 }
 </script>
 
-<style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-
-h1, h2 {
-  font-weight: normal;
-}
-
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-
-a {
-  color: #42b983;
-}
-</style>

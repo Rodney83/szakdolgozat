@@ -5,10 +5,11 @@
   "author": "Pasztor Tamas",
   "private": true,
   "scripts": {
-    "dev": "cross-env NODE_ENV=development webpack --watch --hide-modules",
+    "dev": "cross-env NODE_ENV=development webpack --watch --hide-modules --progress",
     "build": "cross-env NODE_ENV=production webpack --progress --hide-modules"
   },
   "dependencies": {
+    "axios": "^0.16.1",
     "vue": "^2.2.1"
   },
   "devDependencies": {
@@ -19,6 +20,7 @@
     "css-loader": "^0.25.0",
     "file-loader": "^0.9.0",
     "vue-loader": "^11.1.4",
+    "vue-router": "^2.5.2",
     "vue-template-compiler": "^2.2.1",
     "webpack": "^2.2.0",
     "webpack-dev-server": "^2.2.0"
