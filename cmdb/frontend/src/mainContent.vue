@@ -3,8 +3,8 @@
         <!-- Content Header (Page header) -->
         <section class="content-header">
           <h1>
-            {{componentTitle}}
-            <small>{{componentSubTitle}}</small>
+            {{title}}
+            <small>{{subTitle}}</small>
           </h1>
         </section>
 
@@ -20,11 +20,10 @@
 <script>
 export default {
     name: 'mainContent',
-    props: ['activeModule'],
+    props: ['title'],
     data() {
         return {
-            componentTitle: this.activeModule,
-            componentSubTitle: '',
+            subTitle: '',
         }
     },
 }

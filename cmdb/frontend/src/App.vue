@@ -100,7 +100,7 @@
 
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
-      <mainContent v-bind:activeModule="activeModule"></mainContent>
+      <main-content v-bind:title="moduleTitle"></main-content>
   </div>
   <!-- /.content-wrapper -->
 
@@ -124,7 +124,7 @@ export default {
     components: {mainContent},
     data () {
         return {
-            activeModule: 'Valami',
+            moduleTitle: '',
             inventory: false,
             changeManagement: false,
             user: {
@@ -136,12 +136,12 @@ export default {
         Event.$on('inventoryMounted', () => {
             this.inventory = true;
             this.changeManagement = false;
-            this.activeModule = 'Inventory';
-        })
+            this.moduleTitle = 'Inventory';
+        }),
         Event.$on('changeManagementMounted', () => {
             this.inventory = false;
             this.changeManagement = true;
-            this.activeModule = 'Change Management';
+            this.moduleTitle = 'Change Management';
         })
     }
 }

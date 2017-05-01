@@ -2,14 +2,14 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 import axios from 'axios';
 
-window.Vue = Vue
+window.Vue = Vue;
 
-window.Event = new Vue()
+window.Event = new Vue();
 
-Vue.use(VueRouter)
+Vue.use(VueRouter);
 
-window.axios = axios
+window.axios = axios;
 
 window.axios.defaults.headers.common = {
-  'X-Requested-With': 'XMLHttpRequest'
+    'X-Requested-With': 'XMLHttpRequest'
 };
