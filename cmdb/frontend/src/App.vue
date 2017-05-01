@@ -133,16 +133,17 @@ export default {
         }
     },
     created() {
-        Event.$on('inventoryMounted', () => {
-            this.inventory = true;
-            this.changeManagement = false;
-            this.moduleTitle = 'Inventory';
-        }),
-        Event.$on('changeManagementMounted', () => {
-            this.inventory = false;
-            this.changeManagement = true;
-            this.moduleTitle = 'Change Management';
-        })
+        this.$events.$on('module:mounted', (data) => {
+            if (data === 'inventory') {
+                this.inventory = true;
+                this.changeManagement = false;
+                this.moduleTitle = 'Inventory';
+            } else if (data === 'changes') {
+                this.inventory = false;
+                this.changeManagement = true;
+                this.moduleTitle = 'Change Management';
+            }
+        });
     }
 }
 </script>

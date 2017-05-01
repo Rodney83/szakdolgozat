@@ -1,11 +1,11 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
+import VueEvents from 'vue-events';
 import axios from 'axios';
 
 window.Vue = Vue;
 
-window.Event = new Vue();
-
+Vue.use(VueEvents)
 Vue.use(VueRouter);
 
 window.axios = axios;
