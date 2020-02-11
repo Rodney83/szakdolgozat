@@ -1,7 +1,7 @@
 backports.shutil-get-terminal-size==1.0.0
 chardet==2.2.1
 decorator==4.0.10
-Django==1.10.4
+Django==1.11.28
 django-filter==0.15.3
 djangorestframework==3.5.3
 djangorestframework-filters==0.9.1
