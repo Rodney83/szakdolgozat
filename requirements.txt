@@ -3,7 +3,7 @@ chardet==2.2.1
 decorator==4.0.10
 Django==1.10.4
 django-filter==0.15.3
-djangorestframework==3.5.3
+djangorestframework==3.11.2
 djangorestframework-filters==0.9.1
 enum34==1.1.6
 ipaddr==2.1.10
